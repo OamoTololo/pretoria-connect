@@ -7,6 +7,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Serializer\Serializer;
 
@@ -18,7 +19,7 @@ class VlogController extends AbstractController
     /**
      * @Route("/{page}", name="vlog_list", defaults={"page": 1}, requirements={"page"="\d+"})
      */
-    public function list($page = 1, Request $request)
+    public function list($page = 1, Request $request): JsonResponse
     {
         $limit = $request->get('limit', 10);
         $repository = $this->getDoctrine()->getRepository(VlogPost::class);
@@ -34,19 +35,19 @@ class VlogController extends AbstractController
     }
 
     /**
-     * @Route("/post/{id}", name="vlog_by_id", requirements={"id"="\d+"})
+     * @Route("/post/{id}", name="vlog_by_id", requirements={"id"="\d+"}, methods={"GET"})
      * @ParamConverter("post", class="App\Entity\VlogPost")
      */
-    public function post(VlogPost $post)
+    public function post(VlogPost $post): JsonResponse
     {
         return $this->json($post);
     }
 
     /**
-     * @Route("/post/{slug}", name="vlog_by_slug")
+     * @Route("/post/{slug}", name="vlog_by_slug", methods={"GET"})
      * @ParamConverter("post", class="App\Entity\VlogPost", options={"mapping": {"slug": "slug"}})
      */
-    public function postBySlug(VlogPost $post)
+    public function postBySlug(VlogPost $post): JsonResponse
     {
         return $this->json($post);
     }
@@ -54,7 +55,7 @@ class VlogController extends AbstractController
     /**
      * @Route("/add", name="add_vlog", methods={"POST"})
      */
-    public function add(Request $request)
+    public function add(Request $request): JsonResponse
     {
         /** @var Serializer $serializer */
         $serializer = $this->get('serializer');
@@ -66,5 +67,18 @@ class VlogController extends AbstractController
         $em->flush();
 
         return $this->json($vlogPost);
+    }
+
+    /**
+     * @Route("/post/{id}", name="delete_vlog", methods={"DELETE"})
+     */
+    public function delete(VlogPost $post): JsonResponse
+    {
+        $em = $this->getDoctrine()->getManager();
+        $em->remove($post);
+
+        $em->flush();
+
+        return new JsonResponse(null, Response::HTTP_NO_CONTENT);
     }
 }
