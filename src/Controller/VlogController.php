@@ -20,29 +20,32 @@ class VlogController extends AbstractController
     public function list($page = 1, Request $request)
     {
         $limit = $request->get('limit', 10);
+        $repository = $this->getDoctrine()->getRepository(VlogPost::class);
+        $items = $repository->findALL();
+
         return $this->json([
             'page' => $page,
             'limit' => $limit,
             'data' => array_map(function ($item) {
-                return $this->generateUrl('vlog_by_slug', ['slug' => $item['slug']]);
-            })
+                return $this->generateUrl('vlog_by_slug', ['slug' => $item->getSlug()]);
+            }, $items)
         ]);
     }
 
     /**
-     * @Route("/{id}", name="vlog_by_id", requirements={"id"="\d+"})
+     * @Route("/post/{id}", name="vlog_by_id", requirements={"id"="\d+"})
      */
     public function post($id)
     {
-        return $this->json([]);
+        return $this->json($this->getDoctrine()->getRepository(VlogPost::class)->find($id));
     }
 
     /**
-     * @Route("/{slug}", name="vlog_by_slug")
+     * @Route("/post/{slug}", name="vlog_by_slug")
      */
-    public function postBySlug()
+    public function postBySlug($slug)
     {
-        return $this->json([]);
+        return $this->json($this->getDoctrine()->getRepository(VlogPost::class)->findOneBy(['slug' => $slug]));
     }
 
     /**
