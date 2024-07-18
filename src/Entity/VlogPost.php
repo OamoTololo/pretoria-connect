@@ -9,7 +9,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * @ORM\Entity(repositoryClass=VlogPostRepository::class)
  * @ApiResource(
- *     
+ *
  * )
  */
 class VlogPost
