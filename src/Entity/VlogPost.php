@@ -29,7 +29,7 @@ class VlogPost
     /**
      * @ORM\Column(type="datetime")
      */
-    private $publish;
+    private $published;
 
     /**
      * @ORM\Column(type="text")
@@ -37,14 +37,15 @@ class VlogPost
     private $content;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\ManyToOne(targetEntity="App\Entity\User", inversedBy="posts")
+     * @ORM\JoinColumn(nullable=false)
      */
     private $author;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
      */
-    private $slug;
+    private  $slug;
 
     public function getId(): ?int
     {
@@ -63,14 +64,14 @@ class VlogPost
         return $this;
     }
 
-    public function getPublish(): ?\DateTimeInterface
+    public function getPublished(): ?\DateTimeInterface
     {
-        return $this->publish;
+        return $this->published;
     }
 
-    public function setPublish(\DateTimeInterface $publish): self
+    public function setPublished(\DateTimeInterface $publish): self
     {
-        $this->publish = $publish;
+        $this->published = $publish;
 
         return $this;
     }
@@ -87,18 +88,6 @@ class VlogPost
         return $this;
     }
 
-    public function getAuthor(): ?string
-    {
-        return $this->author;
-    }
-
-    public function setAuthor(string $author): self
-    {
-        $this->author = $author;
-
-        return $this;
-    }
-
     public function getSlug(): ?string
     {
         return $this->slug;
@@ -107,6 +96,25 @@ class VlogPost
     public function setSlug(string $slug): self
     {
         $this->slug = $slug;
+
+        return $this;
+    }
+
+    /**
+     * @return User
+     */
+    public function getAuthor(): User
+    {
+        return $this->author;
+    }
+
+    /**
+     * @param User $author
+     * @return $this
+     */
+    public function setAuthor(User $author): self
+    {
+        $this->author = $author;
 
         return $this;
     }

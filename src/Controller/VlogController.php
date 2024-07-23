@@ -28,7 +28,7 @@ class VlogController extends AbstractController
         return $this->json([
             'page' => $page,
             'limit' => $limit,
-            'data' => array_map(function ($item) {
+            'data' => array_map(function (VlogPost $item) {
                 return $this->generateUrl('vlog_by_slug', ['slug' => $item->getSlug()]);
             }, $items)
         ]);
@@ -38,7 +38,7 @@ class VlogController extends AbstractController
      * @Route("/post/{id}", name="vlog_by_id", requirements={"id"="\d+"}, methods={"GET"})
      * @ParamConverter("post", class="App\Entity\VlogPost")
      */
-    public function post(VlogPost $post): JsonResponse
+    public function post($post): JsonResponse
     {
         return $this->json($post);
     }
@@ -47,7 +47,7 @@ class VlogController extends AbstractController
      * @Route("/post/{slug}", name="vlog_by_slug", methods={"GET"})
      * @ParamConverter("post", class="App\Entity\VlogPost", options={"mapping": {"slug": "slug"}})
      */
-    public function postBySlug(VlogPost $post): JsonResponse
+    public function postBySlug($post): JsonResponse
     {
         return $this->json($post);
     }
@@ -76,7 +76,6 @@ class VlogController extends AbstractController
     {
         $em = $this->getDoctrine()->getManager();
         $em->remove($post);
-
         $em->flush();
 
         return new JsonResponse(null, Response::HTTP_NO_CONTENT);

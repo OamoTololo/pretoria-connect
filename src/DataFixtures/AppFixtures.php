@@ -2,6 +2,8 @@
 
 namespace App\DataFixtures;
 
+use App\Entity\Comment;
+use App\Entity\User;
 use App\Entity\VlogPost;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
@@ -20,19 +22,38 @@ class AppFixtures extends Fixture
     }
     public function load(ObjectManager $manager): void
     {
+        $this->loadUsers($manager);
         $this->loadVlogPosts($manager);
     }
-
     public function loadVlogPosts(ObjectManager $manager): void
     {
-        $vlogPosts = new VlogPost();
-        $vlogPosts->setTitle($this->faker->realText(30));
-        $vlogPosts->setPublish($this->faker->dateTimeThisYear);
-        $vlogPosts->setContent($this->faker->realText());
-        $vlogPosts->setAuthor($this->faker->name);
-        $vlogPosts->setSlug($this->faker->slug);
+        $user = $this->getReference('user_admin');
+        $vlogPost = new VlogPost();
+        $vlogPost->setTitle($this->faker->sentence());
+        $vlogPost->setPublished($this->faker->dateTimeThisYear);
+        $vlogPost->setContent($this->faker->paragraph());
+        $vlogPost->setAuthor($user);
+        $vlogPost->setSlug($this->faker->slug());
 
-        $manager->persist($vlogPosts);
+        $manager->persist($vlogPost);
+        $manager->flush();
+    }
+    public function loadComments(ObjectManager $manager): void
+    {
+        $comment = new Comment();
+    }
+    public function loadUsers(ObjectManager $manager): void
+    {
+        $user = new User();
+        $user->setUsername('admin');
+        $user->setPassword('Tololo123');
+        $user->setName('Oamogetswe');
+        $user->setSurname('Mgidi');
+        $user->setEmail('admin@vlogposts.com');
+
+        $this->addReference('user_admin', $user);
+
+        $manager->persist($user);
         $manager->flush();
     }
 }
