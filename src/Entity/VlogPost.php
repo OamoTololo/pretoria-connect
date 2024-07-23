@@ -11,7 +11,8 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * @ORM\Entity(repositoryClass=VlogPostRepository::class)
  * @ApiResource(
- *
+ *     itemOperations={"get"},
+ *     collectionOperations={"get"}
  * )
  */
 class VlogPost
