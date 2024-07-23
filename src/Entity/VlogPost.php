@@ -7,12 +7,16 @@ use App\Repository\VlogPostRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
  * @ORM\Entity(repositoryClass=VlogPostRepository::class)
  * @ApiResource(
  *     itemOperations={"get"},
- *     collectionOperations={"get"}
+ *     collectionOperations={"get"},
+ *     normalizationContext={
+ *         "groups"={"read"}
+ *     }
  * )
  */
 class VlogPost
@@ -21,37 +25,44 @@ class VlogPost
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
+     * @Groups({"read"})
      */
     private ?int $id;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Groups({"read"})
      */
     private ?string $title;
 
     /**
      * @ORM\Column(type="datetime")
+     * @Groups({"read"})
      */
     private ?\DateTimeInterface $published;
 
     /**
      * @ORM\Column(type="text")
+     * @Groups({"read"})
      */
     private ?string $content;
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\User", inversedBy="posts")
      * @ORM\JoinColumn(nullable=false)
+     * @Groups({"read"})
      */
     private ?User $author;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
+     * @Groups({"read"})
      */
     private ?string $slug;
 
     /**
      * @ORM\OneToMany(targetEntity="App\Entity\Comment", mappedBy="vlogPosts")
+     * @Groups({"read"})
      */
     private $comments;
 

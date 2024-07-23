@@ -5,11 +5,15 @@ namespace App\Entity;
 use ApiPlatform\Core\Annotation\ApiResource;
 use App\Repository\CommentRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
  * @ApiResource(
  *     itemOperations={"get"},
- *     collectionOperations={"get"}
+ *     collectionOperations={"get"},
+ *     normalizationContext={
+ *         "groups"={"read"}
+ *     }
  * )
  * @ORM\Entity(repositoryClass=CommentRepository::class)
  */
@@ -19,28 +23,33 @@ class Comment
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
+     * @Groups({"read"})
      */
     private ?int $id;
 
     /**
      * @ORM\Column(type="text")
+     * @Groups({"read"})
      */
     private ?string $content;
 
     /**
      * @ORM\Column(type="datetime")
+     * @Groups({"read"})
      */
     private ?\DateTimeInterface $published;
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\User", inversedBy="comments")
      * @ORM\JoinColumn(nullable=false)
+     * @Groups({"read"})
      */
     private User $author;
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\VlogPost", inversedBy="comments")
      * @ORM\JoinColumn(nullable=false)
+     * @Groups({"read"})
      */
     private $vlogPosts;
 
