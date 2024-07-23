@@ -101,18 +101,18 @@ class VlogPost
     }
 
     /**
-     * @return User
+     * @return User|null
      */
-    public function getAuthor(): User
+    public function getAuthor(): ?User
     {
         return $this->author;
     }
 
     /**
-     * @param User $author
+     * @param User|null $author
      * @return $this
      */
-    public function setAuthor(User $author): self
+    public function setAuthor(?User $author): self
     {
         $this->author = $author;
 

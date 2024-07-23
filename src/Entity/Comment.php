@@ -17,23 +17,23 @@ class Comment
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
      */
-    private $id;
+    private ?int $id;
 
     /**
      * @ORM\Column(type="text")
      */
-    private $content;
+    private ?string $content;
 
     /**
      * @ORM\Column(type="datetime")
      */
-    private $published;
+    private ?\DateTimeInterface $published;
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\User", inversedBy="comments")
      * @ORM\JoinColumn(nullable=false)
      */
-    private $author;
+    private User $author;
 
     public function getId(): ?int
     {
@@ -65,18 +65,18 @@ class Comment
     }
 
     /**
-     * @return User
+     * @return User|null
      */
-    public function getAuthor(): User
+    public function getAuthor(): ?User
     {
         return $this->author;
     }
 
     /**
-     * @param User $author
+     * @param User|null $author
      * @return $this
      */
-    public function setAuthor(User $author): self
+    public function setAuthor(?User $author): self
     {
         $this->author = $author;
 

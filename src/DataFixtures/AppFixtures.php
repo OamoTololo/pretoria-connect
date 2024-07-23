@@ -8,6 +8,7 @@ use App\Entity\VlogPost;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
 use Faker\Factory;
+use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
 class AppFixtures extends Fixture
 {
@@ -16,8 +17,9 @@ class AppFixtures extends Fixture
      */
     private $faker;
 
-    public function __construct()
+    public function __construct(UserPasswordEncoderInterface $passwordEncoder)
     {
+        $this->passwordEncoder = $passwordEncoder;
         $this->faker = Factory::create();
     }
     public function load(ObjectManager $manager): void
@@ -46,7 +48,7 @@ class AppFixtures extends Fixture
     {
         $user = new User();
         $user->setUsername('admin');
-        $user->setPassword('Tololo123');
+        $user->setPassword($this->passwordEncoder->encodePassword($user, 'Tololo123'));
         $user->setName('Oamogetswe');
         $user->setSurname('Mgidi');
         $user->setEmail('admin@vlogposts.com');
