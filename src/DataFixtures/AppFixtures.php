@@ -16,7 +16,6 @@ class AppFixtures extends Fixture
      * @var Factory
      */
     private $faker;
-
     public function __construct(UserPasswordEncoderInterface $passwordEncoder)
     {
         $this->passwordEncoder = $passwordEncoder;
@@ -26,23 +25,38 @@ class AppFixtures extends Fixture
     {
         $this->loadUsers($manager);
         $this->loadVlogPosts($manager);
+        $this->loadComments($manager);
     }
     public function loadVlogPosts(ObjectManager $manager): void
     {
-        $user = $this->getReference('user_admin');
-        $vlogPost = new VlogPost();
-        $vlogPost->setTitle($this->faker->sentence());
-        $vlogPost->setPublished($this->faker->dateTimeThisYear);
-        $vlogPost->setContent($this->faker->paragraph());
-        $vlogPost->setAuthor($user);
-        $vlogPost->setSlug($this->faker->slug());
+        for ($i = 0; $i < 50; $i++) {
+            $vlogPost = new VlogPost();
+            $vlogPost->setTitle($this->faker->sentence());
+            $vlogPost->setPublished($this->faker->dateTimeThisYear);
+            $vlogPost->setContent($this->faker->paragraph());
+            $vlogPost->setAuthor($this->getReference('user_admin'));
+            $vlogPost->setSlug($this->faker->slug());
 
-        $manager->persist($vlogPost);
+            $this->setReference("vlog_post_$i", $vlogPost);
+
+            $manager->persist($vlogPost);
+        }
         $manager->flush();
     }
     public function loadComments(ObjectManager $manager): void
     {
-        $comment = new Comment();
+        for ($i = 0; $i < 25; $i++) {
+            for ($j = 0; $j < rand(1, 4); $j++) {
+                $comment = new Comment();
+                $comment->setContent($this->faker->paragraph());
+                $comment->setAuthor($this->getReference('user_admin'));
+                $comment->setPublished($this->faker->dateTimeThisYear);
+                $comment->setVlogPosts($this->getReference("vlog_post_$i"));
+
+                $manager->persist($comment);
+            }
+        }
+        $manager->flush();
     }
     public function loadUsers(ObjectManager $manager): void
     {
