@@ -42,8 +42,22 @@ class User implements UserInterface
     /**
      * @ORM\Column(type="string", length=255)
      * @Assert\NotBlank()
+     * @Assert\Regex(
+     *     pattern="/(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9]).{7,}/",
+     *     message="Password mus be seven characters long and contain at least one digit, one uppercase"
+     * )
      */
     private ?string $password;
+
+    /**
+     * @ORM\Column(type="string", length=255)
+     * @Assert\NotBlank()
+     * @Assert\Expression(
+     *     "this.getPassword() === this.getConfirmPassword()",
+     *     message="Passwords do not match!"
+     * )
+     */
+    private ?string $confirmPassword;
 
     /**
      * @ORM\Column(type="string", length=255)
@@ -115,7 +129,14 @@ class User implements UserInterface
 
         return $this;
     }
-
+    public function getConfirmPassword(): ?string
+    {
+        return $this->confirmPassword;
+    }
+    public function setConfirmPassword(?string $confirmPassword): void
+    {
+        $this->confirmPassword = $confirmPassword;
+    }
     public function getName(): ?string
     {
         return $this->name;
