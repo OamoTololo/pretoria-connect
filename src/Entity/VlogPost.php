@@ -64,7 +64,7 @@ class VlogPost
      * @ORM\OneToMany(targetEntity="App\Entity\Comment", mappedBy="vlogPosts")
      * @Groups({"read"})
      */
-    private $comments;
+    private ?string $comments;
 
     public function __construct()
     {
